@@ -1,0 +1,17 @@
+Package: versioned_dataset_template
+Title: Title for your dataset package
+Version: 0.0.1
+Date: 2017-04-21
+Description: Description of your dataset 
+Depends:
+    R (>= 3.1.0)
+License: MIT + file LICENSE
+LazyData: true
+Authors@R: as.person(c("Will Cornwell <wcornwell@gmail.com> [aut, cre]","Habacuc Flores <haba@gmail.com> [aut]"))
+Maintainer: Will Cornwell <wcornwell@gmail.com>
+Imports:
+    tidyr,
+    datastorr (>= 0.0.3)
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
