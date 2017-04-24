@@ -1,13 +1,12 @@
 # Lightweight versioned data
 
-The rationale for lightweight versioned data is laid out in [this paper](https://github.com/richfitz/data_versioning).  But the simple goal is to provide versioned data to the world in a way that allows coded access to all versions, new and old.  Moreover, the idea of this project is to provide the tools to do this for free, and without too onerous on-going financial or time commitments, while maintaining some curation of the underlying data.  
+The rationale for lightweight versioned data is laid out in [this paper](https://github.com/richfitz/data_versioning).  But the simple goal is to provide versioned data to the world in a way that allows coded access to all versions, new and old.  Moreover, the idea of this project is to provide the tools to do this for free, and without too onerous on-going financial or time commitments, while maintaining curation of the underlying data.  
 
-This set of instructions relies on a basic knowledge of git and github.  If you're a bit rusty on this see [here for a general introduction](http://environmentalcomputing.net/version-control/).  This tutorial frequently uses tools on setting up R projects.  For a excellent and general introduction to R packages see [Hadley Wickham's website/book](http://r-pkgs.had.co.nz/).  
+This set of instructions relies on a basic knowledge of git and github.  If you're a bit rusty on this see [here for a general introduction](http://environmentalcomputing.net/version-control/).  This tutorial frequently uses tools for setting up R packages.  For a excellent and general introduction to the topic see [Hadley Wickham's website/book](http://r-pkgs.had.co.nz/).  
 
+### Setting up a new lightweight versioned dataset
 
-### Setting up your new and awesome versioned data pacakge
-
-1. Fork the `versioned_data_template` repository
+1. Fork and clone this `versioned_data_template` repository
 2. Rename your repository to reflect your dataset; this name should be the same as the R packages that will distribute your data so something short, precise, and memorable is preferred
 3. Add your data to the repository folder, preferably as a `.csv` file. (The data may be but does not have to be pushed to the cloud repository.)
 4. Install the R library `devtools` if you don't have it already
