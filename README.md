@@ -2,7 +2,7 @@
 
 This set of instructions relies on a basic knowledge of git and github.  If you're a bit rusty on this see [here for a general introduction](http://environmentalcomputing.net/version-control/).  This tutorial frequently uses tools on setting up R projects.  For a excellent and general introduction to R packages see [Hadley Wickham's R package website or book](http://r-pkgs.had.co.nz/).  
 
-The rationale for this particular way of setting things up is laid out in [this paper]().  But the 
+The rationale for this particular way of setting things up is laid out in [this paper](https://github.com/richfitz/data_versioning).  But the simple goal is to provide versioned data to the world in a way that allows coded access to all versions, new and old.  Moreover, the idea of this project is to provide the tools to do this for free, and without too onerous on-going commitments, while maintaining some curation of the underlying data.  
 
 ### Setting up your new and awesome versioned data pacakge
 
@@ -34,13 +34,13 @@ The rationale for this particular way of setting things up is laid out in [this 
 
 ### Testing your package
 
-1. Test that it works by calling the function you created in step (5) of the first section
+1. Test that it works by calling the function you created in step (5) of the first section.  The data should download from github and load 
 
 ### Setting up Digital Object Identifier (DOI) assignment
 
 The specifics of this depend on which DOI minter you use.  We have used both zenodo and figshare.  Each source has their own short tutorials for setting this up.  see here or here.  
 
-**That's it.  You now have a package that is set up for versioned data.**
+**That's it.  You now have a package that is set up for distributing versioned data to the world.**
 
 ## Managing interactions with users of your database
 
