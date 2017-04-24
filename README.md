@@ -33,8 +33,6 @@ This set of instructions relies on a basic knowledge of git and github.  If you'
 
 Where `<description>` is a description of what changed in the package
 
-
-
 ## Maintaining a versioned dataset 
 
 When your dataset improves via error fixes or data addition, and you're happy with the changes, there are a few simple steps to bump the dataset into the future.    
