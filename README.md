@@ -10,7 +10,10 @@ This set of instructions relies on a basic knowledge of git and github.  If you'
 2. Rename your repository to reflect your dataset; this name should be the same as the R packages that will distribute your data so something short, precise, and memorable is preferred
 3. Add your data to the repository folder, preferably as a `.csv` file. (The data may be but does not have to be pushed to the cloud repository.)
 4. Install the R library `devtools` if you don't have it already
-5. Install a package called `datastorr` which manages things behind the scenes.  Run `devtools::install_github("ropenscilabs/datastorr")`
+5. Install a package called `datastorr` which manages things behind the scenes.  In R run: 
+```r
+devtools::install_github("ropenscilabs/datastorr")
+```
 6. In the `dataset_access.R` file, rename the main function called `dataset_access_function` to something specific to your dataset 
 7. Also in the `dataset_access.R` file, find the `dataset_info` function and change 1) the name of the repository to your repository name 2) the name of the file to reflect the name of the file that contains your data.  
 8. *Option for non-csv data structures:* If your dataset is too complicated to fit into a `csv` file, you will have to write an input function that loads your data into R.  Write this input function, include it in the `dataset_access.R` and replace `read_csv` with a call to your input function so that your dataset reads nicely into R for your users.  
