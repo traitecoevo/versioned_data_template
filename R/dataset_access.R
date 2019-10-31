@@ -1,8 +1,8 @@
 
-##' This function provides access to the versioned dataset
+##' This function provides access to the baadclimate versioned dataset
 ##'
 ##'
-##' @title Dataset access
+##' @title Baadclimate Access 
 ##'
 ##' @param version Version number.  The default will load the most
 ##'   recent version on your computer or the most recent version known
@@ -25,7 +25,7 @@
 ##' #
 ##' #
 
-dataset_access_function <- function(version=NULL, path=NULL) {
+baadclimate_access_function <- function(version=NULL, path=NULL) {
   dataset_get(version, path)
 }
 
@@ -35,8 +35,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   2. the file to download (plant_lookup.csv)
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
-  datastorr::github_release_info("<organization_name/repo_name>",
-                                 filename="<name_of_the_file_in_the_release>",
+  datastorr::github_release_info("FabriceSamonte/baadclimate",
+                                 filename="baad_with_map.csv",
                                  read=read_csv,
                                  path=path)
 }
