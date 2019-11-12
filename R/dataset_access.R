@@ -72,9 +72,15 @@ read_csv <- function(...) {
   read.csv(..., stringsAsFactors=FALSE)
 }
 
+read_tif <- function(...) {
+  raster::raster(...) %>% 
+    raster::as.data.frame(xy=TRUE) %>% 
+    as_tibble()
+}
+
 read_zip <- function(...) {
   unzip("baad_with_map.zip", exdir="data") 
-  read.csv("data/baad_with_map.csv", stringsAsFactors = FALSE)
+  read_tif("data/sdat_10023_1_20190603_003205838.tif")
 }
 
 dataset_release <- function(description, path=NULL, ...) {
