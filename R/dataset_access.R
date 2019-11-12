@@ -36,8 +36,8 @@ baadclimate_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info("FabriceSamonte/baadclimate",
-                                 filename="baad_with_map.csv",
-                                 read=read_csv,
+                                 filename="baad_with_map.zip",
+                                 read=read_zip,
                                  path=path)
 }
 
@@ -70,6 +70,11 @@ dataset_del <- function(version, path=NULL) {
 
 read_csv <- function(...) {
   read.csv(..., stringsAsFactors=FALSE)
+}
+
+read_zip <- function(...) {
+  unzip("baad_with_map.zip", exdir="data") 
+  read.csv("data/baad_with_map.zip", stringsAsFactors = FALSE)
 }
 
 dataset_release <- function(description, path=NULL, ...) {
