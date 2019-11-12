@@ -74,7 +74,7 @@ read_csv <- function(...) {
 
 read_zip <- function(...) {
   unzip("baad_with_map.zip", exdir="data") 
-  read.csv("data/baad_with_map.zip", stringsAsFactors = FALSE)
+  read.csv("data/baad_with_map.csv", stringsAsFactors = FALSE)
 }
 
 dataset_release <- function(description, path=NULL, ...) {
