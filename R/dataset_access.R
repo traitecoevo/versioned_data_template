@@ -35,9 +35,9 @@ baadclimate_access_function <- function(version=NULL, path=NULL) {
 ##   2. the file to download (plant_lookup.csv)
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
-  datastorr::github_release_info("FabriceSamonte/baadclimate",
-                                 filename="baad_with_map.zip",
-                                 read=read_zip,
+  datastorr::github_release_info_multi("FabriceSamonte/baadclimate",
+                                 filename=c("baad_with_map.csv", "sdat_10023_1_20190603_003205838.tif"),
+                                 read=c("read_csv", "read_tif"),
                                  path=path)
 }
 
@@ -79,8 +79,10 @@ read_tif <- function(...) {
 }
 
 read_zip <- function(...) {
-  unzip("baad_with_map.zip", exdir="data") 
-  read_tif("data/sdat_10023_1_20190603_003205838.tif")
+  unzip(..., exdir="data")
+  l <- read_tif("data/sdat_10023_1_20190603_003205838.tif")
+  unlink("data/sdat_10023_1_20190603_003205838.tif")
+  l
 }
 
 dataset_release <- function(description, path=NULL, ...) {
