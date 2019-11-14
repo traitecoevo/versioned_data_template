@@ -1,6 +1,6 @@
 Package: baadclimate
 Title: Baad with Climate
-Version: 0.0.7
+Version: 0.0.8
 Date: 2019-10-31
 Description: Extension of baad dataset (includes climate data)
 Depends:
