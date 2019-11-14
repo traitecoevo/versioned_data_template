@@ -36,8 +36,8 @@ baadclimate_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info_multi("FabriceSamonte/baadclimate",
-                                 filename=c("baad_with_map.csv", "sdat_10023_1_20190603_003205838.tif"),
-                                 read=c("read_csv", "read_tif"),
+                                 filenames=c("baad_with_map.csv", "sdat_10023_1_20190603_003205838.tif"),
+                                 read=c(read_csv, read_tif),
                                  path=path)
 }
 
