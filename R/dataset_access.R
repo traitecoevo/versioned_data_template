@@ -36,8 +36,8 @@ baadclimate_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info_multi("FabriceSamonte/baadclimate",
-                                 filenames=c("baad_with_map.csv", "sdat_10023_1_20190603_003205838.tif"),
-                                 read=c(read_csv, read_tif),
+                                 filenames=c("Globcover_Legend.xls"),
+                                 read=c(read_xl),
                                  path=path)
 }
 
@@ -76,6 +76,10 @@ read_tif <- function(...) {
   raster::raster(...) %>% 
     raster::as.data.frame(xy=TRUE) %>% 
     as_tibble()
+}
+
+read_xl <- function(...) {
+  read_xls(...)
 }
 
 update_lookaside_table <- function(path=NULL) {
