@@ -82,9 +82,10 @@ update_lookaside_table <- function(path=NULL) {
   package_info <- dataset_info(path)
   
   # version check 
+  # prevents double entries 
   local_version <- get_desc_version()
-  if(local_version == dataset_version_current(local=FALSE)) 
-    stop(paste0(local_version, " already exists"))
+  if(local_version %in% dataset_versions(local=FALSE)) 
+    stop(paste0("Version ", local_version, " already exists. Update version field in DESCRIPTION before calling."))
   
   # file and function assertions 
   for(read_function in package_info$read) {
@@ -96,7 +97,7 @@ update_lookaside_table <- function(path=NULL) {
 
   # apply functions 
   # TODO: return values unpack need to be gracefully handled
-  message("Testing: loading data into R environment")
+  message("Test: loading data into R environment")
   for(index in 1:length(package_info$filenames)) {
     unpack(package_info$read[[index]], package_info$filenames[index])
   }
