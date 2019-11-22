@@ -42,7 +42,7 @@ dataset_info <- function(path) {
 }
 
 dataset_get <- function(version=NULL, path=NULL) {
-  datastorr::github_release_get(dataset_info(path), version)
+    datastorr::github_release_get(dataset_info(path), version)
 }
 
 ##' @export
@@ -78,14 +78,49 @@ read_tif <- function(...) {
     as_tibble()
 }
 
-read_zip <- function(...) {
-  unzip(..., exdir="data")
-  l <- read_tif("data/sdat_10023_1_20190603_003205838.tif")
-  unlink("data/sdat_10023_1_20190603_003205838.tif")
-  l
+update_lookaside_table <- function(path=NULL) {
+  package_info <- dataset_info(path)
+  
+  # version check 
+  local_version <- get_desc_version()
+  if(local_version == dataset_version_current(local=FALSE)) 
+    stop(paste0(local_version, " already exists"))
+  
+  # file and function assertions 
+  for(read_function in package_info$read) {
+    datastorr::assert_function(read_function)
+  }
+  for(filename in package_info$filenames) {
+    datastorr::assert_file(filename)
+  }
+
+  # apply functions 
+  # TODO: return values unpack need to be gracefully handled
+  message("Testing: loading data into R environment")
+  for(index in 1:length(package_info$filenames)) {
+    unpack(package_info$read[[index]], package_info$filenames[index])
+  }
+ 
+  # update table
+  # stored internally via usethis::use_data()
+  if(!exists("lookaside_table")) {
+    lookaside_table <- tibble(version = character(),
+                              filename = character(),
+                              unpack_function = character())
+  } else if(exists("lookaside_table")) { 
+    # clean/reset entries to deal avoid repetition
+    lookaside_table <- lookaside_table[lookaside_table$version %in% dataset_versions(local=FALSE) ,]
+  }
+  
+  for(index in 1:length(package_info$filenames)) {
+    lookaside_table <- append_lookaside_entry(lookaside_table, local_version, 
+                                              package_info$filename[index], package_info$read[[index]])
+  }
+  usethis::use_data(lookaside_table, internal=TRUE, overwrite=TRUE)
 }
 
 dataset_release <- function(description, path=NULL, ...) {
   datastorr::github_release_create(dataset_info(path),
                                    description=description, ...)
 }
+

@@ -1,6 +1,6 @@
 Package: baadclimate
 Title: Baad with Climate
-Version: 0.0.12
+Version: 0.0.13
 Date: 2019-10-31
 Description: Extension of baad dataset (includes climate data)
 Depends:
@@ -10,7 +10,10 @@ LazyData: true
 Authors@R: as.person(c("Fabrice Samonte <your email here> [aut, cre]","Daniel Falster <her email here> [aut]"))
 Maintainer: Fabrice Samonte <fabricesamonte@outlook.com>
 Imports:
-    datastorr (>= 0.0.3)
+    datastorr (>= 0.0.3),
+    tibble, 
+    tidyverse, 
+    raster
 Suggests:
     testthat
 RoxygenNote: 6.1.1
