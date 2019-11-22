@@ -42,7 +42,18 @@ dataset_info <- function(path) {
 }
 
 dataset_get <- function(version=NULL, path=NULL) {
+  if(is.na(version)) {
     datastorr::github_release_get(dataset_info(path), version)
+  ## TODO: temporary comparison, need a graceful way to retrieve package version
+  } else if(version < get_desc_version()) {
+    package_info <- dataset_info(path)
+    version_metadata <- lookaside_table[lookaside_table$version == version ,]
+    package_info$filenames <- c(unique(version_metadata$filename))
+    package_info$read <- package_info$filenames %>% 
+      lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x,]$unpack_function)) } )
+      
+    datastorr::github_release_get(package_info, version)
+  }
 }
 
 ##' @export
