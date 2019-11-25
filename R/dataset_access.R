@@ -35,25 +35,32 @@ baadclimate_access_function <- function(version=NULL, path=NULL) {
 ##   2. the file to download (plant_lookup.csv)
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
-  datastorr::github_release_info_multi("FabriceSamonte/baadclimate",
+  datastorr::github_release_info_multi("FabriceSamonte/datastorrtest",
                                  filenames=c("Globcover_Legend.xls"),
                                  read=c(read_xl),
                                  path=path)
 }
 
-dataset_get <- function(version=NULL, path=NULL) {
-  if(is.na(version)) {
-    datastorr::github_release_get(dataset_info(path), version)
-  ## TODO: temporary comparison, need a graceful way to retrieve package version
-  } else if(version < get_desc_version()) {
-    package_info <- dataset_info(path)
+versioned_dataset_info <- function(version = NULL, path) {
+  package_info <- dataset_info(path)
+  
+  if(is.null(version)) {
+    ## gets latest remote version if no local version exists,
+    ## otherwise it fetches latest local version 
+    version <- generate_version(path)
+  } 
+  ## TODO : If requested version is ahead of package version
+  if(version < get_desc_version()) {
     version_metadata <- lookaside_table[lookaside_table$version == version ,]
     package_info$filenames <- c(unique(version_metadata$filename))
     package_info$read <- package_info$filenames %>% 
-      lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x,]$unpack_function)) } )
-      
-    datastorr::github_release_get(package_info, version)
-  }
+      lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
+  } 
+  package_info
+}
+
+dataset_get <- function(version=NULL, path=NULL) {
+  datastorr::github_release_get(versioned_dataset_info(version, path), version)
 }
 
 ##' @export
@@ -76,7 +83,12 @@ dataset_version_current <- function(local=TRUE, path=NULL) {
 ##' @export
 ##' @rdname fungal_traits
 dataset_del <- function(version, path=NULL) {
-  datastorr::github_release_del(dataset_info(path), version)
+  if(is.null(version)) {
+    package_info <- dataset_info(path)
+  } else {
+    package_info <- versioned_dataset_info(version, path)
+  }
+  datastorr::github_release_del(package_info, version)
 }
 
 read_csv <- function(...) {
@@ -86,11 +98,11 @@ read_csv <- function(...) {
 read_tif <- function(...) {
   raster::raster(...) %>% 
     raster::as.data.frame(xy=TRUE) %>% 
-    as_tibble()
+    tibble::as_tibble()
 }
 
 read_xl <- function(...) {
-  read_xls(...)
+  readxl::read_xls(...)
 }
 
 update_lookaside_table <- function(path=NULL) {
@@ -125,6 +137,7 @@ update_lookaside_table <- function(path=NULL) {
                               unpack_function = character())
   } else if(exists("lookaside_table")) { 
     # clean/reset entries to deal avoid repetition
+    message("here")
     lookaside_table <- lookaside_table[lookaside_table$version %in% dataset_versions(local=FALSE) ,]
   }
   

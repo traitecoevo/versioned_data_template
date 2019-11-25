@@ -45,4 +45,11 @@ append_lookaside_entry <- function(lookaside_table, version, filename, read) {
                 filename = filename, 
                 unpack_function = deparse(read)))
 }
- 
+
+generate_version <-  function(path) {
+  local_versions <- dataset_versions(local = TRUE, path)
+  if(identical(character(0), local_versions)) 
+    version <- dataset_version_current(local = FALSE, path) 
+  else 
+    version <- dataset_version_current(path=path)
+}
