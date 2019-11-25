@@ -41,7 +41,7 @@ get_desc_version <- function() {
 
 append_lookaside_entry <- function(lookaside_table, version, filename, read) {
    rbind(lookaside_table,
-         tibble(version = version,
+         tibble::tibble(version = version,
                 filename = filename, 
                 unpack_function = deparse(read)))
 }
