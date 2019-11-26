@@ -25,7 +25,7 @@
 ##' #
 ##' #
 
-baadclimate_access_function <- function(version=NULL, path=NULL) {
+dataset_access_function <- function(version=NULL, path=NULL) {
   dataset_get(version, path)
 }
 
@@ -37,30 +37,69 @@ baadclimate_access_function <- function(version=NULL, path=NULL) {
 dataset_info <- function(path) {
   datastorr::github_release_info_multi("FabriceSamonte/datastorrtest",
                                  filenames=c("baad_with_map.csv", "sdat_10023_1_20190603_003205838.tif"),
-                                 read=c(read_csv, read_tif),
+                                 read=c(read_tif, read_csv),
                                  path=path)
 }
 
-versioned_dataset_info <- function(version = NULL, path) {
-  package_info <- dataset_info(path)
+versioned_dataset_info <- function(path, version=NULL, operation="default") {
   
-  if(is.null(version)) {
-    ## gets latest remote version if no local version exists,
-    ## otherwise it fetches latest local version 
-    version <- generate_version(path)
-  } 
-  ## TODO : If requested version is ahead of package version
-  if(version < get_desc_version()) {
-    version_metadata <- lookaside_table[lookaside_table$version == version ,]
-    package_info$filenames <- c(unique(version_metadata$filename))
-    package_info$read <- package_info$filenames %>% 
-      lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
-  } 
-  package_info
+  ## version check 
+  #if(!is.null(version) & !(version %in% dataset_versions(local=FALSE))) {
+  #  stop(paste0("Version ", version, "does not exist."))
+  #}
+  
+  switch(operation, 
+         
+         "get" = {
+           versioned_package_info <- dataset_info(path)
+           if(is.null(version)) {
+             ## gets latest remote version if no local version exists,
+             ## otherwise it fetches latest local version 
+             version <- generate_version(path)
+           }
+           if(!(version %in% dataset_versions(local=FALSE))) {
+             stop(paste0("Version ", version, " does not exist."))
+           }
+           ## TODO : If requested version is ahead of package version
+           if(version < local_package_version()) {
+             version_metadata <- lookaside_table[lookaside_table$version == version ,]
+             versioned_package_info$filenames <- c(unique(version_metadata$filename))
+             versioned_package_info$read <- versioned_package_info$filenames %>% 
+               lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
+           } else if(version > local_package_version()) {
+             if(major_version_change(local_package_version(), version)) 
+               stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package."))
+           }
+           versioned_package_info
+         },
+         
+         "del" = {
+           versioned_package_info <- dataset_info(path)
+           if(is.null(version)) { 
+             versioned_package_info
+           ## TODO : If requested version is ahead of package version
+           } else if(version < local_package_version()) {
+             version_metadata <- lookaside_table[lookaside_table$version == version ,]
+             versioned_package_info$filenames <- c(unique(version_metadata$filename))
+             versioned_package_info$read <- versioned_package_info$filenames %>% 
+               lapply(function(x) { eval(parse(text = version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
+             versioned_package_info
+           } 
+           
+         },
+         
+         "version" = {
+           dataset_info(path)
+         }, 
+         
+         "default" = {
+           dataset_info(path)
+         }
+  ) 
 }
 
 dataset_get <- function(version=NULL, path=NULL) {
-  datastorr::github_release_get(versioned_dataset_info(version, path), version)
+  datastorr::github_release_get(versioned_dataset_info(path, version=version, operation="get"), version)
 }
 
 ##' @export
@@ -71,24 +110,19 @@ dataset_get <- function(version=NULL, path=NULL) {
 ##'   \code{TRUE}, but there are no local versions, then we do check
 ##'   for the most recent github version.
 dataset_versions <- function(local=TRUE, path=NULL) {
-  datastorr::github_release_versions(dataset_info(path), local)
+  datastorr::github_release_versions(versioned_dataset_info(path, operation="version"), local)
 }
 
 ##' @export
 ##' @rdname fungal_traits
 dataset_version_current <- function(local=TRUE, path=NULL) {
-  datastorr::github_release_version_current(dataset_info(path), local)
+  datastorr::github_release_version_current(versioned_dataset_info(path, operation="version"), local)
 }
 
 ##' @export
 ##' @rdname fungal_traits
 dataset_del <- function(version, path=NULL) {
-  if(is.null(version)) {
-    package_info <- dataset_info(path)
-  } else {
-    package_info <- versioned_dataset_info(version, path)
-  }
-  datastorr::github_release_del(package_info, version)
+  datastorr::github_release_del(versioned_dataset_info(path, version=version, operation="del"), version)
 }
 
 read_csv <- function(...) {
@@ -110,7 +144,7 @@ update_lookaside_table <- function(path=NULL) {
   
   # version check 
   # prevents double entries 
-  local_version <- get_desc_version()
+  local_version <- local_package_version()
   if(local_version %in% dataset_versions(local=FALSE)) 
     stop(paste0("Version ", local_version, " already exists. Update version field in DESCRIPTION before calling."))
   
@@ -121,23 +155,25 @@ update_lookaside_table <- function(path=NULL) {
   for(filename in package_info$filenames) {
     datastorr::assert_file(filename)
   }
-
+  
   # apply functions 
   # TODO: return values unpack need to be gracefully handled
   message("Test: loading data into R environment")
   for(index in 1:length(package_info$filenames)) {
-    unpack(package_info$read[[index]], package_info$filenames[index])
+    switch(unpack(package_info$read[[index]], package_info$filenames[index]),
+           {
+             stop()
+           })  
   }
- 
+  
   # update table
   # stored internally via usethis::use_data()
   if(!exists("lookaside_table")) {
-    lookaside_table <- tibble::tibble(version = character(),
+    lookaside_table <- tibble(version = character(),
                               filename = character(),
                               unpack_function = character())
   } else if(exists("lookaside_table")) { 
     # clean/reset entries to deal avoid repetition
-    message("here")
     lookaside_table <- lookaside_table[lookaside_table$version %in% dataset_versions(local=FALSE) ,]
   }
   

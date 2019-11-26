@@ -28,7 +28,7 @@ is_version <- function(version) {
   !inherits(try(numeric_version(version), silent=TRUE), "try-error")
 }
 
-get_desc_version <- function() {
+local_package_version <- function() {
   git <- Sys.which("git")
   if (git == "") {
     stop("Need a system git to create releases: http://git-scm.com")
@@ -53,3 +53,11 @@ generate_version <-  function(path) {
   else 
     version <- dataset_version_current(path=path)
 }
+
+major_version_change <- function(curr_package_version, requested_version) {
+  curr_major_version_num <- as.numeric(regmatches(curr_package_version, regexpr("^\\d", curr_package_version)))
+  req_major_version_num <- as.numeric(regmatches(requested_version,regexpr("^\\d",requested_version)))
+  
+  ifelse(req_major_version_num > curr_major_version_num, TRUE, FALSE)
+}
+  
