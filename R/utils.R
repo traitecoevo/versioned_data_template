@@ -29,14 +29,15 @@ is_version <- function(version) {
 }
 
 local_package_version <- function() {
-  git <- Sys.which("git")
-  if (git == "") {
-    stop("Need a system git to create releases: http://git-scm.com")
-  }
-  git_root <- system2(git, c("rev-parse", "--show-toplevel"), stdout = TRUE)
-  pkg_root <- find_package_root(git_root)
-  dcf <- as.list(read.dcf(file.path(pkg_root, "DESCRIPTION"))[1,])
-  version_local <- dcf$Version
+  #git <- Sys.which("git")
+  #if (git == "") {
+  #  stop("Need a system git to create releases: http://git-scm.com")
+  #}
+  #git_root <- system2(git, c("rev-parse", "--show-toplevel"), stdout = TRUE)
+  #pkg_root <- find_package_root(git_root)
+  #dcf <- as.list(read.dcf(file.path(pkg_root, "DESCRIPTION"))[1,])
+  #version_local <- dcf$Version
+  max(unique(lookaside_table$version))
 }
 
 append_lookaside_entry <- function(lookaside_table, version, filename, read) {
