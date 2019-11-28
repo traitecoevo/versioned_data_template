@@ -36,8 +36,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info_multi("FabriceSamonte/datastorrtest",
-                                 filenames=c("Globcover_Legend.xls"),
-                                 read=c(read_xls),
+                                 filenames=c("Globcover_Legend.xls", "sdat_10023_1_20190603_003205838.tif"),
+                                 read=c(read_xls, read_raster),
                                  path=path)
 }
 
@@ -124,6 +124,10 @@ read_csv <- function(...) {
 
 read_xls <- function(...) {
   readxl::read_xls(...)
+}
+
+read_raster <- function(...) {
+  raster::raster(...)
 }
 
 update_lookaside_table <- function(path=NULL) {

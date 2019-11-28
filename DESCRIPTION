@@ -1,6 +1,6 @@
 Package: datastorrtest
 Title: datastorr_test
-Version: 1.0.0
+Version: 2.0.0
 Date: 2017-04-21
 Description: Description of your dataset and what it's going to be used for
 Depends:
@@ -9,7 +9,8 @@ License: MIT + file LICENSE
 LazyData: true
 Imports:
     datastorr (>= 0.0.3), 
-    readxl
+    readxl, 
+    raster
 Suggests:
     testthat
 RoxygenNote: 5.0.1
