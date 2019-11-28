@@ -36,8 +36,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info_multi("FabriceSamonte/datastorrtest",
-                                 filenames=c("baad_with_map.csv"),
-                                 read=c(read_csv),
+                                 filenames=c("Globcover_Legend.xls"),
+                                 read=c(read_xls),
                                  path=path)
 }
 
@@ -120,6 +120,10 @@ dataset_del <- function(version, path=NULL) {
 
 read_csv <- function(...) {
   read.csv(..., stringsAsFactors=FALSE)
+}
+
+read_xls <- function(...) {
+  readxl::read_xls(...)
 }
 
 update_lookaside_table <- function(path=NULL) {
