@@ -12,5 +12,5 @@ Imports:
     readxl, 
     raster
 Suggests:
-    testthat
+    testthat (>= 2.1.0)
 RoxygenNote: 5.0.1
