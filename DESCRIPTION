@@ -9,6 +9,7 @@ License: MIT + file LICENSE
 LazyData: true
 Imports:
     datastorr (>= 0.0.3), 
+    tibble,
     readxl, 
     raster
 Suggests:
