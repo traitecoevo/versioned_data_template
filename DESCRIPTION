@@ -10,6 +10,7 @@ LazyData: true
 Imports:
     datastorr (>= 0.0.3), 
     tibble,
+    tidyverse,
     readxl, 
     raster
 Suggests:
