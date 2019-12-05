@@ -55,12 +55,10 @@ versioned_dataset_info <- function(path, version=NULL, operation="default") {
              stop(paste0("Version ", version, " does not exist."))
            }
            if(version < local_package_version()) {
-             version_metadata <- lookaside_table[lookaside_table$version == version ,]
-             versioned_package_info$filenames <- c(unique(version_metadata$filename))
-             versioned_package_info$read <- lapply(versioned_package_info$filenames, function(x) { eval(parse(text=version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
+             versioned_package_info <- adjust_dataset_info_fields(versioned_package_info, version)
            } else if(version > local_package_version()) {
              if(major_version_change(local_package_version(), version))
-               stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package."))
+               stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package to retrieve newer versions of the data.s"))
            }
            versioned_package_info
          },
@@ -76,9 +74,7 @@ versioned_dataset_info <- function(path, version=NULL, operation="default") {
              if(!version %in% dataset_versions(local=FALSE)) {
                stop(paste0("Version ", version, " does not exist."))
              }
-             version_metadata <- lookaside_table[lookaside_table$version == version ,]
-             versioned_package_info$filenames <- c(unique(version_metadata$filename))
-             versioned_package_info$read <- lapply(versioned_package_info$filenames, function(x) { eval(parse(text=version_metadata[version_metadata$filename == x ,]$unpack_function)) } )
+             versioned_package_info <- adjust_dataset_info_fields(versioned_package_info, version)
            } 
            versioned_package_info
          },
