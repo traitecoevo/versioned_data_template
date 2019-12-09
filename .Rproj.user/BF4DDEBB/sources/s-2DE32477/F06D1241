@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1575853040462.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2940284224",
+    "id" : "F06D1241",
+    "lastKnownWriteTime" : 1575853504,
+    "last_content_update" : 1575853504956,
+    "path" : "~/Documents/repositories/datastorrtest/R/utils.R",
+    "project_path" : "R/utils.R",
+    "properties" : {
+        "cursorPosition" : "32,36",
+        "scrollLine" : "28"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
