@@ -1,0 +1,14 @@
+Package: datatemplate
+Title: datatemplate
+Version: 0.0.1
+Date: 2019-10-31
+Description: description
+Depends:
+    R (>= 3.1.0)
+License: MIT + file LICENSE
+LazyData: true
+Imports:
+    datastorr (>= 0.0.3)
+Suggests:
+    testthat
+RoxygenNote: 6.1.1
