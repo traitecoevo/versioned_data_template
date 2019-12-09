@@ -31,8 +31,7 @@ assert_file <- function(filename) {
   }
 }
 
-assert_function <- function (x, name = deparse(substitute(x))) 
-{
+assert_function <- function (x, name = deparse(substitute(x))) {
   if (!is.function(x)) {
     stop(sprintf("%s must be a function", name), call. = FALSE)
   }

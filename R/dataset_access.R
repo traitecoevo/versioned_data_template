@@ -36,8 +36,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info("FabriceSamonte/datastorrtest",
-                                 filename=c("<filenames>"),
-                                 read=c("<function name>"),
+                                 filename=c("Globcover_Legend.xls"),
+                                 read=c(read_spreadsheet),
                                  path=path)
 }
 
@@ -120,21 +120,25 @@ read_csv <- function(...) {
   read.csv(..., stringsAsFactors=FALSE)
 }
 
+read_spreadsheet <- function(...) {
+  readxl::read_xls(...)
+}
+
 update_lookaside_table <- function(path=NULL) {
   package_info <- dataset_info(path)
   
   # version check 
   # prevents double entries 
-  local_version <- local_package_version()
+  local_version <- desc_version()
   if(local_version %in% dataset_versions(local=FALSE)) 
     stop(paste0("Version ", local_version, " already exists. Update version field in DESCRIPTION before calling."))
   
   # file and function assertions 
   for(read_function in package_info$read) {
-    datastorr::assert_function(read_function)
+    assert_function(read_function)
   }
   for(filename in package_info$filenames) {
-    datastorr::assert_file(filename)
+    assert_file(filename)
   }
   
   # apply functions 
