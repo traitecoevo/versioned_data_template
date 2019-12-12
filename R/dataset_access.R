@@ -41,56 +41,28 @@ dataset_info <- function(path) {
                                  path=path)
 }
 
-versioned_dataset_info <- function(path, version=NULL, operation="default") {
+versioned_dataset_info <- function(path, version=NULL) {
   
-  switch(operation, 
-         "get" = {
-           versioned_package_info <- dataset_info(path)
-           if(is.null(version)) {
-             ## gets latest remote version if no local version exists,
-             ## otherwise it fetches latest local version 
-             version <- generate_version(path)
-           }
-           if(!(version %in% dataset_versions(local=FALSE))) {
-             stop(paste0("Version ", version, " does not exist."))
-           }
-           if(version < local_package_version()) {
-             versioned_package_info <- adjust_dataset_info_fields(versioned_package_info, version)
-           } else if(version > local_package_version()) {
-             if(major_version_change(local_package_version(), version))
-               stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package to retrieve newer versions of the data."))
-           }
-           versioned_package_info
-         },
-         
-         "del" = {
-           versioned_package_info <- dataset_info(path)
-           if(is.null(version)) { 
-             versioned_package_info
-             ## TODO : If requested version is ahead of package version
-           } else if(version < local_package_version()) {
-             ## TODO: this will be repeated when functionality for 
-             ## versions ahead of current package version TEST
-             if(!version %in% dataset_versions(local=FALSE)) {
-               stop(paste0("Version ", version, " does not exist."))
-             }
-             versioned_package_info <- adjust_dataset_info_fields(versioned_package_info, version)
-           } 
-           versioned_package_info
-         },
-         
-         "version" = {
-           dataset_info(path)
-         }, 
-         
-         "default" = {
-           dataset_info(path)
-         }
-  ) 
+  versioned_package_info <- dataset_info(path)
+  if(is.null(version)) {
+    ## gets latest remote version if no local version exists,
+    ## otherwise it fetches latest local version 
+    version <- generate_version(path)
+  }
+  if(!(version %in% dataset_versions(local=FALSE))) {
+    stop(paste0("Version ", version, " does not exist."))
+  }
+  if(version < local_package_version()) {
+    versioned_package_info <- adjust_dataset_info_fields(versioned_package_info, version)
+  } else if(version > local_package_version()) {
+    if(major_version_change(local_package_version(), version))
+      stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package to retrieve newer versions of the data."))
+  }
+  versioned_package_info
 }
 
 dataset_get <- function(version=NULL, path=NULL) {
-  datastorr::github_release_get(versioned_dataset_info(path, version=version, operation="get"), version)
+  datastorr::github_release_get(versioned_dataset_info(path, version), version)
 }
 
 ##' @export
@@ -101,19 +73,19 @@ dataset_get <- function(version=NULL, path=NULL) {
 ##'   \code{TRUE}, but there are no local versions, then we do check
 ##'   for the most recent github version.
 dataset_versions <- function(local=TRUE, path=NULL) {
-  datastorr::github_release_versions(versioned_dataset_info(path, operation="version"), local)
+  datastorr::github_release_versions(dataset_info(path), local)
 }
 
 ##' @export
 ##' @rdname fungal_traits
 dataset_version_current <- function(local=TRUE, path=NULL) {
-  datastorr::github_release_version_current(versioned_dataset_info(path, operation="version"), local)
+  datastorr::github_release_version_current(dataset_info(path), local)
 }
 
 ##' @export
 ##' @rdname fungal_traits
 dataset_del <- function(version, path=NULL) {
-  datastorr::github_release_del(versioned_dataset_info(path, version=version, operation="del"), version)
+  datastorr::github_release_del(dataset_info(path), version)
 }
 
 read_csv <- function(...) {
