@@ -36,8 +36,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info("FabriceSamonte/datastorrtest",
-                                 filename=c("baad_with_map.csv", "sdat_10023_1_20190603_003205838.tif"),
-                                 read=c(read_csv, read_raster),
+                                 filename="Globcover_Legend.xls",
+                                 read=length,
                                  path=path)
 }
 
@@ -100,34 +100,41 @@ read_raster <- function(...) {
   raster::raster(...)
 }
 
-update_lookaside_table <- function(path=NULL) {
+update_lookaside_table <- function(path=NULL, binary=TRUE) {
   package_info <- dataset_info(path)
+  ## NULL filename case should should 
+  ## add source repository zip to the table 
+  if(!binary) {
+    package_info$filenames <- "Source.zip"
+  }
   
-  # version check 
-  # prevents double entries 
+  ## version check to prevent double entries 
   local_version <- desc_version()
   if(local_version %in% dataset_versions(local=FALSE)) 
     stop(paste0("Version ", local_version, " already exists. Update version field in DESCRIPTION before calling."))
   
-  # file and function assertions 
-  for(read_function in package_info$read) {
-    assert_function(read_function)
-  }
-  for(filename in package_info$filenames) {
-    assert_file(filename)
-  }
+  ## file and function assertions, if new release 
+  ## consists of binaries 
+  if(binary) {
+    for(read_function in package_info$read) {
+      assert_function(read_function)
+    }
+    for(filename in package_info$filenames) {
+      assert_file(filename)
+    }
   
-  # apply functions 
-  message("Test: loading data into R environment")
-  for(index in 1:length(package_info$filenames)) {
-    switch(unpack(package_info$read[[index]], package_info$filenames[index]),
-           "error"= {
-             stop()
-           }, 
-           "ok" = {
-             message(paste0("Loading ", package_info$filenames[index]), " succeeded")
-           })  
-  }
+    # apply functions 
+    message("Test: loading binaries into R environment")
+    for(index in 1:length(package_info$filenames)) {
+      switch(unpack(package_info$read[[index]], package_info$filenames[index]),
+             "error"= {
+               stop()
+             }, 
+             "ok" = {
+               message(paste0("Loading ", package_info$filenames[index]), " succeeded")
+             })  
+    }
+  } 
   
   # update table
   # stored internally via usethis::use_data()
