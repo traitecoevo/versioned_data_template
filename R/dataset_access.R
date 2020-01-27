@@ -10,7 +10,7 @@
 ##'   With \code{plant_lookup_del}, specifying \code{version=NULL}
 ##'   will delete \emph{all} data sets.
 ##'
-##' @param path Path to store the data at.  If not given,
+##' @param path Path to store the data at. If not given,
 ##'   \code{datastorr} will use \code{rappdirs} to find the best place
 ##'   to put persistent application data on your system.  You can
 ##'   delete the persistent data at any time by running
@@ -36,8 +36,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info("FabriceSamonte/datastorrtest",
-                                 filename=c("baad_with_map.csv", "Globcover_Legend.xls"),
-                                 read=c(read_csv, read_spreadsheet),
+                                 filename=NULL,
+                                 read=length,
                                  path=path)
 }
 
