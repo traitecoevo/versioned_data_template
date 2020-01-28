@@ -36,8 +36,8 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info("FabriceSamonte/datastorrtest",
-                                 filename=NULL,
-                                 read=length,
+                                 filename="Source.zip",
+                                 read=unpack_zip,
                                  path=path)
 }
 
@@ -98,6 +98,11 @@ read_spreadsheet <- function(...) {
 
 read_raster <- function(...) {
   raster::raster(...)
+}
+
+unpack_zip <- function(...) {
+  files <- unzip(...)
+  files
 }
 
 update_lookaside_table <- function(path=NULL, binary=TRUE) {
