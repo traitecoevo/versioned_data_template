@@ -36,7 +36,7 @@ dataset_access_function <- function(version=NULL, path=NULL) {
 ##   3. the function to read the file, given a filename (read_csv)
 dataset_info <- function(path) {
   datastorr::github_release_info("FabriceSamonte/datastorrtest",
-                                 filename="Source.zip",
+                                 filename=NULL,
                                  read=length,
                                  path=path)
 }
