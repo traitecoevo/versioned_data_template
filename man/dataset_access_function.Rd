@@ -13,7 +13,7 @@ to the package if you have never downloaded the data before.
 With \code{plant_lookup_del}, specifying \code{version=NULL}
 will delete \emph{all} data sets.}
 
-\item{path}{Path to store the data at.  If not given,
+\item{path}{Path to store the data at. If not given,
 \code{datastorr} will use \code{rappdirs} to find the best place
 to put persistent application data on your system.  You can
 delete the persistent data at any time by running
