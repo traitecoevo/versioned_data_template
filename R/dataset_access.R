@@ -56,13 +56,13 @@ versioned_dataset_info <- function(path, version=NULL) {
     versioned_package_info <- adjust_dataset_info_fields(versioned_package_info, version)
   } else if(version > local_package_version()) {
     if(major_version_change(local_package_version(), version))
-      stop(paste0("Could not retrieve version ", version, " due to outdated package. Please update your package to retrieve newer versions of the data."))
+      warning(paste0("Warning"))
   }
   versioned_package_info
 }
 
 dataset_get <- function(version=NULL, path=NULL) {
-  datastorr::github_release_get(versioned_dataset_info(path, version), version)
+  datastorr::github_release_get(get_version_details(path, version), version)
 }
 
 ##' @export
@@ -159,7 +159,61 @@ update_lookaside_table <- function(path=NULL, binary=TRUE) {
 }
 
 dataset_release <- function(description, path=NULL, ...) {
-  datastorr::github_release_create(dataset_info(path),
+  local_version <- desc_version()
+  if(local_version %in% dataset_versions(local=FALSE)) 
+    stop(paste0("Version ", local_version, " already exists. Update version field in DESCRIPTION before calling."))
+  
+  datastorr::github_release_create(get_version_details(path, local_version),
                                    description=description, ...)
+}
+
+get_version_details <- function(path=NULL, version=NULL) {
+  info <- dataset_info(path)
+  
+  ## gets latest remote version if no local version exists,
+  ## otherwise it fetches latest local version 
+  if(is.null(version)) {
+    version <- generate_version(path)
+  }
+  
+  switch(version,
+    "5.0.0"={
+      info$filenames <- NULL
+      info$read <- c(unzip)
+      info
+    },
+    "4.0.0"={
+      info$filenames <- NULL
+      info$read <- c(unzip)
+      info
+    }, 
+    "3.0.0"={
+      info$filenames <- NULL
+      info$read <- c(unzip)
+      info 
+    }, 
+    "2.0.0"={
+      info$filenames <- c("baad_with_map.csv", "Globcover_Legend.xls")
+      info$read <- c(read_csv, read_spreadsheet) 
+      info
+    }, 
+    "1.0.0"={
+      info$filenames <- NULL
+      info$read <- c(length) 
+      info
+    }, 
+    "0.0.1"={
+      info$filenames <- NULL
+      info$read <- c(length)
+      info 
+    },
+    {
+      if(major_version_change(local_package_version(), version))
+        warning(paste0("Warning"))
+      info$filenames <- NULL 
+      info$read <- c(length)
+      info 
+    }
+  )
 }
 
