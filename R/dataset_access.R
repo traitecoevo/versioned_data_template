@@ -177,6 +177,11 @@ get_version_details <- function(path=NULL, version=NULL) {
   }
   
   switch(version,
+    "6.0.0"={
+      info$filenames <- c("baad_with_map.csv", "Globcover_Legend.xls")
+      info$read <- c(read_csv, read_spreadsheet)
+      info
+    },
     "5.0.0"={
       info$filenames <- NULL
       info$read <- c(unzip)
