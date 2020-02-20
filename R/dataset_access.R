@@ -177,36 +177,6 @@ get_version_details <- function(path=NULL, version=NULL) {
   }
   
   switch(version,
-    "6.0.0"={
-      info$filenames <- c("baad_with_map.csv", "Globcover_Legend.xls")
-      info$read <- c(read_csv, read_spreadsheet)
-      info
-    },
-    "5.0.0"={
-      info$filenames <- NULL
-      info$read <- c(unzip)
-      info
-    },
-    "4.0.0"={
-      info$filenames <- NULL
-      info$read <- c(unzip)
-      info
-    }, 
-    "3.0.0"={
-      info$filenames <- NULL
-      info$read <- c(unzip)
-      info 
-    }, 
-    "2.0.0"={
-      info$filenames <- c("baad_with_map.csv", "Globcover_Legend.xls")
-      info$read <- c(read_csv, read_spreadsheet) 
-      info
-    }, 
-    "1.0.0"={
-      info$filenames <- NULL
-      info$read <- c(length) 
-      info
-    }, 
     "0.0.1"={
       info$filenames <- NULL
       info$read <- c(length)
@@ -214,9 +184,9 @@ get_version_details <- function(path=NULL, version=NULL) {
     },
     {
       if(major_version_change(local_package_version(), version))
-        warning(paste0("Warning"))
+        warning(paste0("Current package is outdated. Attempting to retrieve newer datasets may cause an error"))
       info$filenames <- NULL 
-      info$read <- c(length)
+      info$read <- c(unzip)
       info 
     }
   )
