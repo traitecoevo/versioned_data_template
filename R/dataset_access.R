@@ -88,22 +88,36 @@ dataset_del <- function(version, path=NULL) {
   datastorr::github_release_del(dataset_info(path), version)
 }
 
-read_csv <- function(...) {
-  read.csv(..., stringsAsFactors=FALSE)
+get_version_details <- function(path=NULL, version=NULL) {
+  info <- dataset_info(path)
+  
+  ## gets latest remote version if no local version exists,
+  ## otherwise it fetches latest local version 
+  if(is.null(version)) {
+    version <- generate_version(path)
+  }
+  
+  switch(version,
+         "0.0.2"={
+           info$filenames <- NULL 
+           info$read <- c(unzip)
+           info
+         }, 
+         "0.0.1"={
+           info$filenames <- NULL
+           info$read <- c(length)
+           info 
+         },
+         {
+           if(major_version_change(local_package_version(), version))
+             warning(paste0("Current package is outdated. Attempting to retrieve newer datasets may cause an error"))
+           info$filenames <- NULL 
+           info$read <- c(unzip)
+           info 
+         }
+  )
 }
 
-read_spreadsheet <- function(...) {
-  readxl::read_xls(...)
-}
-
-read_raster <- function(...) {
-  raster::raster(...)
-}
-
-unpack_zip <- function(...) {
-  files <- unzip(...)
-  files
-}
 
 update_lookaside_table <- function(path=NULL, binary=TRUE) {
   package_info <- dataset_info(path)
@@ -167,28 +181,4 @@ dataset_release <- function(description, path=NULL, ...) {
                                    description=description, ...)
 }
 
-get_version_details <- function(path=NULL, version=NULL) {
-  info <- dataset_info(path)
-  
-  ## gets latest remote version if no local version exists,
-  ## otherwise it fetches latest local version 
-  if(is.null(version)) {
-    version <- generate_version(path)
-  }
-  
-  switch(version,
-    "0.0.1"={
-      info$filenames <- NULL
-      info$read <- c(length)
-      info 
-    },
-    {
-      if(major_version_change(local_package_version(), version))
-        warning(paste0("Current package is outdated. Attempting to retrieve newer datasets may cause an error"))
-      info$filenames <- NULL 
-      info$read <- c(unzip)
-      info 
-    }
-  )
-}
 
