@@ -98,6 +98,11 @@ get_version_details <- function(path=NULL, version=NULL) {
   }
   
   switch(version,
+         "0.0.2"={
+           info$filenames <- "Source.zip"
+           info$read <- c(unzip)
+           info
+         },
          "0.0.1"={
            info$filenames <- NULL
            info$read <- c(length)
