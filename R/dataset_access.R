@@ -98,23 +98,13 @@ get_version_details <- function(path=NULL, version=NULL) {
   }
   
   switch(version,
-         "1.0.0"={
-           info$filenames <- "Globcover_Legend.xls"
-           info$read <- c(read_spreadsheet)
-           info
-         },
-         "0.0.2"={
-           info$filenames <- NULL 
-           info$read <- c(unzip)
-           info
-         }, 
          "0.0.1"={
            info$filenames <- NULL
            info$read <- c(length)
            info 
          },
          {
-           if(major_version_change(local_package_version(), version))
+           if(major_version_change(desc_version(), version))
              warning(paste0("Current package is outdated. Attempting to retrieve newer datasets may cause an error"))
            info$filenames <- NULL 
            info$read <- c(unzip)
