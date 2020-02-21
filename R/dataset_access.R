@@ -98,6 +98,11 @@ get_version_details <- function(path=NULL, version=NULL) {
   }
   
   switch(version,
+         "2.0.0"={
+           info$filenames <- c("Globcover_Legend.xls", "baad_with_map.csv")
+           info$read <- c(read_spreadsheet, read_csv)
+           info 
+         }, 
          "1.0.0"={
            info$filenames <- c("Globcover_Legend.xls")
            info$read <- c(read_spreadsheet)
