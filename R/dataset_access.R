@@ -98,6 +98,11 @@ get_version_details <- function(path=NULL, version=NULL) {
   }
   
   switch(version,
+         "1.0.0"={
+           info$filenames <- "Globcover_Legend.xls"
+           info$read <- read_xls
+           info
+         },
          "0.0.2"={
            info$filenames <- NULL 
            info$read <- c(unzip)
