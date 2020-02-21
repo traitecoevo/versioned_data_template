@@ -100,7 +100,7 @@ get_version_details <- function(path=NULL, version=NULL) {
   switch(version,
          "1.0.0"={
            info$filenames <- "Globcover_Legend.xls"
-           info$read <- read_spreadsheet
+           info$read <- c(read_spreadsheet)
            info
          },
          "0.0.2"={
