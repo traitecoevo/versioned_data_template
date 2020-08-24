@@ -97,35 +97,34 @@ get_version_details <- function(path=NULL, version=NULL) {
     version <- generate_version(path)
   }
   
-  switch(version,
-         "2.0.0"={
-           info$filenames <- c("Globcover_Legend.xls", "baad_with_map.csv")
-           info$read <- c(read_spreadsheet, read_csv)
-           info 
-         }, 
-         "1.0.0"={
-           info$filenames <- c("Globcover_Legend.xls")
-           info$read <- c(read_spreadsheet)
-           info 
-         },
-         "0.0.2"={
-           info$filenames <- "Source.zip"
-           info$read <- c(unzip)
-           info
-         },
-         "0.0.1"={
-           info$filenames <- NULL
-           info$read <- c(length)
-           info 
-         },
-         {
-           if(major_version_change(desc_version(), version))
-             warning(paste0("Current package is outdated. Attempting to retrieve newer datasets may cause an error"))
-           info$filenames <- NULL 
-           info$read <- c(unzip)
-           info 
-         }
-  )
+  if(major_version_change(desc_version(), version)) {
+      warning(paste0("Current package is outdated. Attempting to retrieve newer datasets may cause an error"))
+    info$filenames <- NULL 
+    info$read <- c(unzip)
+    info
+  } else if (numeric_version(version) >= numeric_version("2.1.0")){ 
+    message("Using unpack methods from version 2.1.0")
+    info$filenames <- c("Central Coast Leaderboard.csv")
+    info$read <- c(read_csv)
+    info 
+  } else if (numeric_version(version) >= numeric_version("2.0.0")) {
+    message("Using unpack methods from version 2.0.0")
+    info$filenames <- c("Globcover_Legend.xls", "baad_with_map.csv")
+    info$read <- c(read_spreadsheet, read_csv)
+    info 
+  } else if (numeric_version(version) >= numeric_version("1.0.0")) {
+    info$filenames <- c("Globcover_Legend.xls")
+    info$read <- c(read_spreadsheet)
+    info 
+  } else if (numeric_version(version) >= numeric_version("0.0.2")) {
+    info$filenames <- "Source.zip"
+    info$read <- c(unzip)
+    info
+  } else if (numeric_version(version) >= numeric_version("0.0.1")) {
+    info$filenames <- NULL
+    info$read <- c(length)
+    info 
+  }
 }
 
 

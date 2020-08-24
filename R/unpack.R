@@ -17,6 +17,10 @@ unpack_zip <- function(...) {
   files
 }
 
+read_shp <- function(...) {
+  
+}
+
 unpack <- function(read_function, filename) {
   out <- tryCatch(
     {
