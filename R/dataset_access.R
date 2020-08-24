@@ -104,7 +104,7 @@ get_version_details <- function(path=NULL, version=NULL) {
     info
   } else if (numeric_version(version) >= numeric_version("2.1.0")){ 
     message("Using unpack methods from version 2.1.0")
-    info$filenames <- c("Central Coast Leaderboard.csv")
+    info$filenames <- c("Central_Coast_Leaderboard.csv")
     info$read <- c(read_csv)
     info 
   } else if (numeric_version(version) >= numeric_version("2.0.0")) {
