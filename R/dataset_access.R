@@ -97,11 +97,19 @@ get_version_details <- function(path=NULL, version=NULL) {
     version <- generate_version(path)
   }
   
+  ## Methods of dealing with versions ahead of the current running package 
+  ## If blocks must be in descending order version wise
+  ## Other methods would involve using csv like data structure
   if(major_version_change(desc_version(), version)) {
-      warning(paste0("Current package is outdated. Attempting to retrieve newer datasets may cause an error"))
+      warning(paste0("Current package is outdated. Downloading source code from version ", version))
     info$filenames <- NULL 
     info$read <- c(unzip)
     info
+  } else if (numeric_version(version) >= numeric_version("3.0.0")) {
+    message("Using unpack methods from version 3.0.0")
+    info$filenames <- c("Globcover", "baad")
+    info$read <- c(read_spreadsheet, read_csv)
+    info 
   } else if (numeric_version(version) >= numeric_version("2.1.0")){ 
     message("Using unpack methods from version 2.1.0")
     info$filenames <- c("Central_Coast_Leaderboard.csv")
