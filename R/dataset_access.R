@@ -136,58 +136,7 @@ get_version_details <- function(path=NULL, version=NULL) {
 }
 
 
-update_lookaside_table <- function(path=NULL, binary=TRUE) {
-  package_info <- dataset_info(path)
-  ## NULL filename case should should 
-  ## add source repository zip to the table 
-  if(!binary) {
-    package_info$filenames <- "Source.zip"
-  }
-  
-  ## version check to prevent double entries 
-  local_version <- desc_version()
-  if(local_version %in% dataset_versions(local=FALSE)) 
-    stop(paste0("Version ", local_version, " already exists. Update version field in DESCRIPTION before calling."))
-  
-  ## file and function assertions, if new release 
-  ## consists of binaries 
-  if(binary) {
-    for(read_function in package_info$read) {
-      assert_function(read_function)
-    }
-    for(filename in package_info$filenames) {
-      assert_file(filename)
-    }
-  
-    # apply functions 
-    message("Test: loading binaries into R environment")
-    for(index in 1:length(package_info$filenames)) {
-      switch(unpack(package_info$read[[index]], package_info$filenames[index]),
-             "error"= {
-               stop()
-             }, 
-             "ok" = {
-               message(paste0("Loading ", package_info$filenames[index]), " succeeded")
-             })  
-    }
-  } 
-  
-  # update table
-  # stored internally via usethis::use_data()
-  if(!exists("lookaside_table")) {
-    lookaside_table <- tibble::tibble(version = character(),
-                                      filename = character(),
-                                      unpack_function = character())
-  } else if(exists("lookaside_table")) { 
-    # clean/reset entries to deal avoid repetition
-    lookaside_table <- lookaside_table[lookaside_table$version %in% dataset_versions(local=FALSE) ,]
-  }
-  
-  for(index in 1:length(package_info$filenames)) {
-    lookaside_table <- append_lookaside_entry(lookaside_table, local_version, package_info$filename[index], package_info$read[[index]])
-  }
-  usethis::use_data(lookaside_table, internal=TRUE, overwrite=TRUE)
-}
+
 
 dataset_release <- function(description, path=NULL, ...) {
   local_version <- desc_version()
