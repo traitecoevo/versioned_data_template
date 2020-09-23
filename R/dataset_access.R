@@ -105,6 +105,11 @@ get_version_details <- function(path=NULL, version=NULL) {
     info$filenames <- NULL 
     info$read <- c(unzip)
     info
+  } else if(numeric_version(version) >= numeric_version("4.0.0")) {
+    message("Using unpack methods from version 4.0.0")
+    info$filenames <- c("Central_Coast")
+    info$read <- c(read_csv)
+    info 
   } else if (numeric_version(version) >= numeric_version("3.0.0")) {
     message("Using unpack methods from version 3.0.0")
     info$filenames <- c("Globcover", "baad")
